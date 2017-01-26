@@ -9,4 +9,5 @@ args = parser.parse_args()
 
 taxes = opentax.Taxes()
 taxes.load_input(args.folder)
+taxes.form_1040()
 
