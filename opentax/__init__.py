@@ -1,6 +1,7 @@
 import json
 import numpy
 import os
+import opentax.form_OR_40
 
 class TaxTable2016(object):
 
@@ -48,11 +49,11 @@ class TaxTable2016(object):
 
         print numpy.logical_not(x > line43)
         
-        x1 = x[numpy.logical_not(x > line43)]
+        x1 = x[x > line43]
 
         print x1
 
-        x2 = x1[-1]
+        x2 = x1[0]
         
         print x2
 
@@ -65,6 +66,7 @@ class TaxTable2016(object):
         print self.table[i,status+1][0][0]
 
         return self.table[i,status+1][0][0]
+
 
 class Worksheet_6251(object):
     def fill(self, taxes):
@@ -162,10 +164,10 @@ class Form_1040(object):
         line36 = 0
 
         # line 37
-        line37 = line22 - line36
+        self.line37 = line22 - line36
 
         # line 38
-        line38 = line37
+        line38 = self.line37
 
         # fill schedule A
         taxes.form_1040_schedule_A.fill(taxes)
@@ -197,15 +199,19 @@ class Form_1040(object):
 
         line55 = 0
         
-        line56 = max(line47 - line55, 0)
+        self.line56 = max(line47 - line55, 0)
+
+        self.line59 = 0
 
         # line 63
         line63 = sum([
-            line56,
+            self.line56,
             ])
 
         # payments
         line64 = taxes.form_totals("W-2", "box2")
+
+        self.line68 = 0
 
         line74 = sum([
             line64,
@@ -216,20 +222,24 @@ class Form_1040(object):
 
         # print output
 
+        print "Form 1040"
         print "line   7: {:16.2f}".format(line7)
+        print "line  10: {:16.2f}".format(self.line10)
+        print "line  21: {:16.2f}".format(self.line21)
         print "line  22: {:16.2f}".format(line22)
         print "line  36: {:16.2f}".format(line36)
-        print "line  37: {:16.2f}".format(line37)
+        print "line  37: {:16.2f}".format(self.line37)
         print "line  38: {:16.2f}".format(line38)
 
         print
         print "schedule A"
-        print "  line   5: {:16.2f}".format(taxes.form_1040_schedule_A.line5)
-        print "  line   6: {:16.2f}".format(taxes.form_1040_schedule_A.line6)
-        print "  line   9: {:16.2f}".format(taxes.form_1040_schedule_A.line9)
-        print "  line  10: {:16.2f}".format(taxes.form_1040_schedule_A.line10)
-        print "  line  13: {:16.2f}".format(taxes.form_1040_schedule_A.line13)
-        print "  line  15: {:16.2f}".format(taxes.form_1040_schedule_A.line15)
+        print "  {:<32}{:16.0f}".format("line   5: state and local tax",taxes.form_1040_schedule_A.line5)
+        print "  {:<32}{:16.0f}".format("line   6", taxes.form_1040_schedule_A.line6)
+        print "  {:<32}{:16.0f}".format("line   9", taxes.form_1040_schedule_A.line9)
+        print "  {:<32}{:16.0f}".format("line  10", taxes.form_1040_schedule_A.line10)
+        print "  {:<32}{:16.0f}".format("line  13", taxes.form_1040_schedule_A.line13)
+        print "  {:<32}{:16.0f}".format("line  15", taxes.form_1040_schedule_A.line15)
+        print "  {:<32}{:16.0f}".format("line  29", taxes.form_1040_schedule_A.line29)
 
         print "{:<32}{:16.2f}".format("line  40:", line40)
         print "{:<32}{:16.2f}".format("line  41:", self.line41)
@@ -237,7 +247,7 @@ class Form_1040(object):
         print "{:<32}{:16.2f}".format("line  44:", self.line44)
         print "{:<32}{:16.2f}".format("line  47:", line47)
         print "{:<32}{:16.2f}".format("line  55:", line55)
-        print "{:<32}{:16.2f}".format("line  56: line47 - line55", line56)
+        print "{:<32}{:16.2f}".format("line  56: line47 - line55", self.line56)
         print "{:<32}{:16.2f}".format("line  63: total tax", line63)
         print "{:<32}{:16.2f}".format("line  64:", line64)
         print "{:<32}{:16.2f}".format("line  74: payments", line74)
@@ -264,8 +274,6 @@ class Form_1040_Schedule_A(object):
         self.line13 = taxes.forms_1098_box5()
        
         self.line15 = self.line10 + self.line13
-
-
 
         self.line29 = self.line4 + self.line9 + self.line15
 
@@ -338,6 +346,11 @@ class Taxes(object):
         self.form_1040 = Form_1040()
 
         self.form_1040.fill(self)
+
+    def form_OR_40(self):
+        
+        self.form_OR_40 = opentax.form_OR_40.Form_OR_40()
+        self.form_OR_40.fill(self)
 
 
 
