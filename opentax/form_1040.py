@@ -108,7 +108,7 @@ class Form_1040(_Form_1040):
         # line 40
         self.lines["40"] = taxes.form_1040_schedule_A.line("29")
 
-        if self.line("38") < self.line_42_adjusted_gross_income_limit 156900:
+        if self.line("38") < self.line_42_adjusted_gross_income_limit:
             self.lines["42"] = 4050 * self.line("6d")
 
 
