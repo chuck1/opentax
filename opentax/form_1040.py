@@ -7,15 +7,20 @@ class Form_1040(opentax.form.Form):
     def __init__(self):
         super(Form_1040, self).__init__()
 
+        self.line_calc_table["6d"] = self.line_6d
+
+    def line_6d(self):
+        return self.line("6a") + self.line("6b") + len(self.line("6c"))
+
     def fill(self, taxes):
         
         taxes.form_1040_schedule_A = opentax.form_1040_sch_a.Form_1040_Schedule_A()
 
         # line 6
-        line6d = line("6d")
+        line6d = self.line("6d")
 
         # line 7
-        line7 = taxes.forms_W_2.line("box 1")
+        line7 = taxes.forms_W_2.line("1")
   
         self.line10 = 0
         self.line21 = 0
@@ -46,7 +51,7 @@ class Form_1040(opentax.form.Form):
 
         line43 = max(self.line41 - line42, 0)
 
-        tt = TaxTable2016()
+        tt = taxes.tax_table
         
         self.line44 = tt.lookup(line43, 1)
 

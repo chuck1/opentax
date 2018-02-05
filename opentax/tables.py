@@ -44,25 +44,25 @@ class TaxTable2016(object):
 
         x = self.table[:,0]
         
-        print x
+        print(x)
 
-        print numpy.logical_not(x > line43)
+        print(numpy.logical_not(x > line43))
         
         x1 = x[x > line43]
 
-        print x1
+        print(x1)
 
         x2 = x1[0]
         
-        print x2
+        print(x2)
 
         i = numpy.where(x==x2)
 
-        print i[0][0]
+        print(i[0][0])
 
-        print self.table[i]
-        print self.table[i,status+1]
-        print self.table[i,status+1][0][0]
+        print(self.table[i])
+        print(self.table[i,status+1])
+        print(self.table[i,status+1][0][0])
 
         return self.table[i,status+1][0][0]
 

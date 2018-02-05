@@ -2,12 +2,11 @@ import crayons
 
 class Form:
     def __init__(self, filename=None, data=None):
-        pass
+        self.line_calc_table = {}
 
     def read(self, filename, data):
         self.filename = filename
         self.data = data
-        self.line_calc_table = {}
 
         if data is None:
             self.lines = {}

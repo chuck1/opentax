@@ -11,10 +11,10 @@ class Form_1040_Schedule_A:
         self.line4 = 0
         
         # income taxes paid
-        self.line5 = taxes.forms_W_2.line("box 17")
+        self.line5 = taxes.forms_W_2.line("17")
         
         # real estate taxes
-        self.line6 = taxes.forms_1098.line("box 10")
+        self.line6 = taxes.forms_1098.line("10")
 
         self.line9 = self.line5 + self.line6
 
