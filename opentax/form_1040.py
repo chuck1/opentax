@@ -9,9 +9,14 @@ class _Form_1040(opentax.form.Form):
     line_calc_table = {}
 
 class Form_1040(_Form_1040):
+
+    line_42_adjusted_gross_income_limit = 156900
+
     def __init__(self):
         super(Form_1040, self).__init__()
 
+        self.line_description["37"] = "adjusted gross income"
+        self.line_description["38"] = "adjusted gross income"
         self.line_description["40"] = "itemized deductions"
         self.line_description["75"] = "overpaid"
         
@@ -103,7 +108,7 @@ class Form_1040(_Form_1040):
         # line 40
         self.lines["40"] = taxes.form_1040_schedule_A.line("29")
 
-        if self.line("38") < 156900:
+        if self.line("38") < self.line_42_adjusted_gross_income_limit 156900:
             self.lines["42"] = 4050 * self.line("6d")
 
 
