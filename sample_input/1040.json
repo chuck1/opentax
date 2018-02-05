@@ -1,0 +1,15 @@
+{
+	"form":"1040",
+	"lines":{
+		"6a": 1,
+		"6b": 1,
+		"6c": [
+			{
+				"first name": "Billy",
+			       	"last name": "Smith",
+				"ssn": "",
+				"relation": "child"
+			}
+		]
+	}
+}

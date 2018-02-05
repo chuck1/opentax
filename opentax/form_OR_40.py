@@ -2,7 +2,7 @@
 class Worksheet_OR_40_line_10(object):
     def fill(self, taxes):
 
-        line1 = taxes.form_1040.line56
+        line1 = taxes.form_1040().line("56")
 
         line2 = taxes.form_1040.line46
 
@@ -24,8 +24,8 @@ class Worksheet_OR_40_line_10(object):
 
         self.line11 = min(line9, line10)
 
-        print "Worksheet_OR_40_line_10"
-        print self.line11
+        print("Worksheet_OR_40_line_10")
+        print(self.line11)
 
 
 class Form_OR_40(object):
@@ -62,8 +62,8 @@ class Form_OR_40(object):
             line22 = 4028 + (line21 - 50000) * 0.09
 
         
-        print "{:<32}{:16.2f}".format("line  21: taxable income", line21)
-        print "{:<32}{:16.2f}".format("line  22: tax", line22)
+        print("{:<32}{:16.2f}".format("line  21: taxable income", line21))
+        print("{:<32}{:16.2f}".format("line  22: tax", line22))
 
 
 
