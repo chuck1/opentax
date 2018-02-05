@@ -9,7 +9,7 @@ parser.add_argument("folder")
 args = parser.parse_args()
 
 taxes = opentax.Taxes()
-taxes.tax_table = opentax.tables.TaxTable2016()
+taxes.tax_table = opentax.tables.TaxTable2017()
 
 taxes.load_input(args.folder)
 

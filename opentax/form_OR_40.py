@@ -1,69 +1,77 @@
 
-class Worksheet_OR_40_line_10(object):
+import opentax.form
+
+class Worksheet_OR_40_line_10(opentax.form.Form):
     def fill(self, taxes):
 
-        line1 = taxes.form_1040().line("56")
+        self.lines["1"] = taxes.form_1040().line("56")
 
-        line2 = taxes.form_1040.line46
+        self.lines["2"] = taxes.form_1040().line("46")
 
-        line3 = line1 - line2
+        self.lines["3"] = self.line("1") - self.line("2")
 
-        line4 = taxes.form_1040.line59
+        self.lines["4"] = taxes.form_1040().line("59")
 
-        line5 = line3 + line4
+        self.lines["5"] = self.line("3") + self.line("4")
 
-        line6 = taxes.form_1040.line68
+        self.lines["6"] = taxes.form_1040().line("68")
 
-        line7 = 0
+        self.lines["7"] = 0
 
-        line8 = line6 + line7
+        self.lines["8"] = self.line("6") + self.line("7")
 
-        line9 = line5 - line8
+        self.lines["9"] = self.line("5") - self.line("8")
 
-        line10 = 6500
+        self.lines["10"] = 6500
 
-        self.line11 = min(line9, line10)
+        self.lines["11"] = min(self.line("9"), self.line("10"))
 
         print("Worksheet_OR_40_line_10")
-        print(self.line11)
+        print(self.line("11"))
 
 
-class Form_OR_40(object):
+
+class _Form_OR_40(opentax.form.Form):
+    line_calc_table = {}
+
+class Form_OR_40(_Form_OR_40):
     def fill(self, taxes):
 
         worksheet_OR_40_line_10 = Worksheet_OR_40_line_10()
         worksheet_OR_40_line_10.fill(taxes)
 
-        line7 = taxes.form_1040.line37
+        self.lines["7"] = taxes.form_1040().line("37")
 
-        line8 = 0
+        self.lines["8"] = 0
 
-        line9 = line7 + line8
+        self.lines["9"] = self.line("7") + self.line("8")
 
-        line10 = worksheet_OR_40_line_10.line11
+        self.lines["10"] = worksheet_OR_40_line_10.line("11")
 
-        line14 = line10
+        self.lines["14"] = self.line("10")
     
-        line15 = line9 - line14
+        self.lines["15"] = self.line("9") - self.line("14")
 
-        line16 = taxes.form_1040_schedule_A.line29
+        self.lines["16"] = taxes.form_1040_schedule_A.line("29")
 
-        line17 = taxes.form_1040_schedule_A.line5
+        self.lines["17"] = taxes.form_1040_schedule_A.line("5")
 
-        line18 = line16 - line17
+        self.lines["18"] = self.line("16") - self.line("17")
         
-        line19 = 0
+        self.lines["19"] = 0
 
-        line20 = max(line18, line19)
+        self.lines["20"] = max(self.line("18"), self.line("19"))
 
-        line21 = line15 - line20
+        self.lines["21"] = self.line("15") - self.line("20")
+        
+        self.lines["22"] = 0
 
-        if (line21 > 50000) and (line21 < 125000):
-            line22 = 4028 + (line21 - 50000) * 0.09
+        if (self.line("21") > 50000) and (self.line("21") < 125000):
+            self.lines["22"] = 4028 + (self.line("21") - 50000) * 0.09
 
         
-        print("{:<32}{:16.2f}".format("line  21: taxable income", line21))
-        print("{:<32}{:16.2f}".format("line  22: tax", line22))
+        print("{:<32}{:16.2f}".format("line  21: taxable income", self.line("21")))
+        print("{:<32}{:16.2f}".format("line  22: tax", self.line("22")))
 
 
 

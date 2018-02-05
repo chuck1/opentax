@@ -15,6 +15,7 @@ def form_factory(filename):
     forms = {
             "W-2": opentax.form_w_2.Form_W_2,
             "1040": opentax.form_1040.Form_1040,
+            "1098": opentax.form_1098.Form_1098,
             }
     
     form = forms[data["form"]]()
@@ -42,13 +43,6 @@ class Taxes(object):
 
         self.forms_W_2 = FormGroup(self.forms_W_2())
         self.forms_1098 = FormGroup(self.forms_1098())
-
-    def form_totals(self, form, box):
-        y = 0
-        for f in self.forms_input:
-            if f["form"] == form:
-                y += f[box]
-        return y
 
     def forms_W_2(self):
         for f in self.forms_input:

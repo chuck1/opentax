@@ -9,14 +9,11 @@ class Worksheet_6251(opentax.form.Form):
         
         print("Worksheet 6251")
 
-        line1 = taxes.form_1040.line41
+        line1 = taxes.form_1040().line("41")
 
         line2 = 0
 
-        line3 = sum([
-            taxes.form_1040_schedule_A.line9,
-            taxes.form_1040_schedule_A.line9,
-            ])
+        line3 = taxes.form_1040_schedule_A.line("9")
 
         line4 = sum([
             line1,
@@ -25,8 +22,8 @@ class Worksheet_6251(opentax.form.Form):
             ])
         
         line5 = sum([
-            taxes.form_1040.line10,
-            taxes.form_1040.line21,
+            taxes.form_1040().line("10"),
+            taxes.form_1040().line("21"),
             ])
 
         line6 = 0

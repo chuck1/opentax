@@ -1,124 +1,139 @@
 import json
 import numpy
 import os
-import opentax.form_1040_sch_a
 
-class Form_1040(opentax.form.Form):
+import opentax.form_1040_sch_a
+import opentax.worksheet_6251
+
+class _Form_1040(opentax.form.Form):
+    line_calc_table = {}
+
+class Form_1040(_Form_1040):
     def __init__(self):
         super(Form_1040, self).__init__()
 
-        self.line_calc_table["6d"] = self.line_6d
+        self.line_description["40"] = "itemized deductions"
+        self.line_description["75"] = "overpaid"
+        
+        self.line_calc_table = {
+                "6d": self.line_6d,
+                "22": self.line_22,
+                "37": self.line_37,
+                "38": self.line_38,
+                "41": self.line_41,
+                "43": self.line_43,
+                "47": self.line_47,
+                "56": self.line_56,
+                "63": self.line_63,
+                "74": self.line_74,
+                "75": self.line_75,
+                }
 
     def line_6d(self):
         return self.line("6a") + self.line("6b") + len(self.line("6c"))
+
+    def line_22(self):
+        # total income
+        # just W-2
+        return self.line("7")
+
+    def line_37(self):
+        return self.line("22") - self.line("36")
+
+    def line_38(self):
+        return self.line("37")
+
+    def line_41(self):
+        return self.line("38") - self.line("40")
+
+    def line_43(self):
+        return max(self.line("41") - self.line("42"), 0)
+
+    def line_47(self):
+        return sum([
+                self.line("44"),
+                self.line("45"),
+                self.line("46"),
+                ])
+
+    def line_56(self):
+        return max(self.line("47") - self.line("55"), 0)
+
+    def line_63(self):
+        return sum([
+            self.line("56"),
+            ])
+
+    def line_74(self):
+        return sum([
+            self.line("64"),
+            ])
+
+    def line_75(self):
+        return max(self.line("74") - self.line("63"), 0)
+
+    def line_(self):
+        return
+
+    def line_(self):
+        return
+
+    def line_(self):
+        return
 
     def fill(self, taxes):
         
         taxes.form_1040_schedule_A = opentax.form_1040_sch_a.Form_1040_Schedule_A()
 
-        # line 6
-        line6d = self.line("6d")
-
         # line 7
-        line7 = taxes.forms_W_2.line("1")
-  
-        self.line10 = 0
-        self.line21 = 0
+        self.lines["7"] = taxes.forms_W_2.line("1")
+        
+        # taxable refunds, credits, or offsets of state and local income taxes
+        self.lines["10"] = 0
 
-        # line 22
-        line22 = line7
+        # other income
+        self.lines["21"] = 0
 
-        # line 36
-        line36 = 0
-
-        # line 37
-        self.line37 = line22 - line36
-
-        # line 38
-        line38 = self.line37
-
+        # adjustment a gross income
+        self.lines["36"] = 0
+        
         # fill schedule A
         taxes.form_1040_schedule_A.fill(taxes)
         
         # line 40
-        line40 = taxes.form_1040_schedule_A.line29
+        self.lines["40"] = taxes.form_1040_schedule_A.line("29")
 
-        # line 41
-        self.line41 = line38 - line40
+        if self.line("38") < 156900:
+            self.lines["42"] = 4050 * self.line("6d")
 
-        if line38 < 155650:
-            line42 = 4050 * line6d
 
-        line43 = max(self.line41 - line42, 0)
+        self.lines["44"] = taxes.tax_table.lookup(self.line("43"), 1)
 
-        tt = taxes.tax_table
-        
-        self.line44 = tt.lookup(line43, 1)
-
-        self.line46 = 0
+        self.lines["46"] = 0
 
         # line 45
-        worksheet_6251 = Worksheet_6251()
+        worksheet_6251 = opentax.worksheet_6251.Worksheet_6251()
         worksheet_6251.fill(taxes)
+        self.lines["45"] = 0
 
-        line47 = sum([
-                self.line44,
-                ])
 
-        line55 = 0
+        self.lines["55"] = 0
         
-        self.line56 = max(line47 - line55, 0)
 
-        self.line59 = 0
+        self.lines["59"] = 0
 
         # line 63
-        line63 = sum([
-            self.line56,
-            ])
 
         # payments
-        line64 = taxes.form_totals("W-2", "box2")
+        self.lines["64"] = taxes.forms_W_2.line("2")
 
-        self.line68 = 0
-
-        line74 = sum([
-            line64,
-            ])
-
-        # line 75
-        line75 = max(line74 - line63, 0)
-
-        # print output
-        
-        print("Form 1040")
-        print("line   7: {:16.2f}".format(line7))
-        print("line  10: {:16.2f}".format(self.line10))
-        print("line  21: {:16.2f}".format(self.line21))
-        print("line  22: {:16.2f}".format(line22))
-        print("line  36: {:16.2f}".format(line36))
-        print("line  37: {:16.2f}".format(self.line37))
-        print("line  38: {:16.2f}".format(line38))
+        self.lines["68"] = 0
 
         print()
-        print("schedule A")
-        print("  {:<32}{:16.0f}".format("line   5: state and local tax",taxes.form_1040_schedule_A.line5))
-        print("  {:<32}{:16.0f}".format("line   6", taxes.form_1040_schedule_A.line6))
-        print("  {:<32}{:16.0f}".format("line   9", taxes.form_1040_schedule_A.line9))
-        print("  {:<32}{:16.0f}".format("line  10", taxes.form_1040_schedule_A.line10))
-        print("  {:<32}{:16.0f}".format("line  13", taxes.form_1040_schedule_A.line13))
-        print("  {:<32}{:16.0f}".format("line  15", taxes.form_1040_schedule_A.line15))
-        print("  {:<32}{:16.0f}".format("line  29", taxes.form_1040_schedule_A.line29))
+        print("Form 1040")
+        self.print_lines(["7", "10", "21", "22", "36", "37", "38", "40", "41", "43", "44", "47", "55", "56", "63", "64", "74", "75"])
 
-        print("{:<32}{:16.2f}".format("line  40:", line40))
-        print("{:<32}{:16.2f}".format("line  41:", self.line41))
-        print("{:<32}{:16.2f}".format("line  43:", line43))
-        print("{:<32}{:16.2f}".format("line  44:", self.line44))
-        print("{:<32}{:16.2f}".format("line  47:", line47))
-        print("{:<32}{:16.2f}".format("line  55:", line55))
-        print("{:<32}{:16.2f}".format("line  56: line47 - line55", self.line56))
-        print("{:<32}{:16.2f}".format("line  63: total tax", line63))
-        print("{:<32}{:16.2f}".format("line  64:", line64))
-        print("{:<32}{:16.2f}".format("line  74: payments", line74))
-        print("{:<32}{:16.2f}".format("line  75:", line75))
-
-
+        print()
+        print("Schedule A")
+        taxes.form_1040_schedule_A.print_lines(["5", "6","9", "10", "13", "15", "29"])
+ 

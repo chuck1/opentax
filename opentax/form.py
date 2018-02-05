@@ -1,8 +1,13 @@
+import inspect
 import crayons
 
 class Form:
+    line_calc_table = {}
+
     def __init__(self, filename=None, data=None):
-        self.line_calc_table = {}
+        self.filename = None
+        self.lines = {}
+        self.line_description = {}
 
     def read(self, filename, data):
         self.filename = filename
@@ -20,7 +25,7 @@ class Form:
             raise
         else:
             return func()
-
+    
     def line(self, line_name):
 
         try:
@@ -31,10 +36,18 @@ class Form:
         try:
             return self.lines[line_name]
         except KeyError:
-            print(crayons.red("{} in file {} does not have line {}".format(
+            msg = "{} in file {} does not have line {}".format(
                 self.__class__.__name__,
                 repr(self.filename),
-                repr(line_name))))
-            raise
+                repr(line_name))
+            print(crayons.red(msg))
+            raise Exception(msg)
 
-
+    def print_lines(self, lines):
+        for line in lines:
+            print("line {:3}: {:30}: {:12.2f}".format(
+                line, 
+                self.line_description.get(line, ""),
+                self.line(line), 
+                ))
+    

@@ -1,11 +1,47 @@
 import json
-import numpy
+import numpy as np
 import os
 
-class TaxTable2016(object):
+class TaxTable:
+    def lookup(self, line43, status):
 
+        #print(line43)
+
+        x = self.table[:,0]
+        
+        #print(x)
+
+        #print(np.logical_not(x > line43))
+        
+        x0 = x[x < line43]
+        x1 = x[x > line43]
+        
+        if (np.shape(x0)[0] == 0) or ((np.shape(x1)[0] == 0)):
+            raise Exception("tax table does not cover your taxable income")
+
+        #print(np.shape(x0))
+        #print(np.shape(x1))
+        #print(x0)
+        #print(x1)
+
+        x2 = x1[0]
+        
+        #print(x2)
+
+        i = np.where(x==x2)
+
+        #print(i[0][0])
+
+        #print(self.table[i])
+        #print(self.table[i,status+1])
+        #print(self.table[i,status+1][0][0])
+
+        return self.table[i,status+1][0][0]
+
+
+class TaxTable2016(TaxTable):
     def __init__(self):
-        self.table = numpy.array([
+        self.table = np.array([
             [55550, 9653, 7401, 9653, 8179],
             [55600, 9665, 7409, 9665, 8191],
             [55650, 9678, 7416, 9678, 8204],
@@ -38,32 +74,13 @@ class TaxTable2016(object):
             [58000, 10265, 7769, 10265, 8791],
             ])
 
-    def lookup(self, line43, status):
-
-        
-
-        x = self.table[:,0]
-        
-        print(x)
-
-        print(numpy.logical_not(x > line43))
-        
-        x1 = x[x > line43]
-
-        print(x1)
-
-        x2 = x1[0]
-        
-        print(x2)
-
-        i = numpy.where(x==x2)
-
-        print(i[0][0])
-
-        print(self.table[i])
-        print(self.table[i,status+1])
-        print(self.table[i,status+1][0][0])
-
-        return self.table[i,status+1][0][0]
+class TaxTable2017(TaxTable):
+    def __init__(self):
+        self.table = np.array([
+            [39400, 5583, 4974, 5583, 5239],
+            [39450, 4495, 4981, 5595, 5246],
+            [50800, 8433, 6684, 8433, 6949],
+            [50850, 8445, 6691, 8445, 6959],
+            ])
 
 
