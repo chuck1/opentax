@@ -11,6 +11,7 @@ class _Form_1040(opentax.form.Form):
 class Form_1040(_Form_1040):
 
     line_42_adjusted_gross_income_limit = 156900
+    line_42_exemption = 4050
 
     def __init__(self):
         super(Form_1040, self).__init__()
@@ -26,6 +27,7 @@ class Form_1040(_Form_1040):
                 "37": self.line_37,
                 "38": self.line_38,
                 "41": self.line_41,
+                "42": self.line_42,
                 "43": self.line_43,
                 "47": self.line_47,
                 "56": self.line_56,
@@ -50,6 +52,11 @@ class Form_1040(_Form_1040):
 
     def line_41(self):
         return self.line("38") - self.line("40")
+
+    def line_42(self):
+        if self.line("38") < self.line_42_adjusted_gross_income_limit:
+            return self.line_42_exemption * self.line("6d")
+        raise NotImplementedError()
 
     def line_43(self):
         return max(self.line("41") - self.line("42"), 0)
@@ -107,9 +114,6 @@ class Form_1040(_Form_1040):
         
         # line 40
         self.lines["40"] = taxes.form_1040_schedule_A.line("29")
-
-        if self.line("38") < self.line_42_adjusted_gross_income_limit:
-            self.lines["42"] = 4050 * self.line("6d")
 
 
         self.lines["44"] = taxes.tax_table.lookup(self.line("43"), 1)
