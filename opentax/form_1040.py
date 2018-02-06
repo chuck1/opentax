@@ -19,6 +19,8 @@ class Form_1040(_Form_1040):
         self.line_description["37"] = "adjusted gross income"
         self.line_description["38"] = "adjusted gross income"
         self.line_description["40"] = "itemized deductions"
+        self.line_description["42"] = "exemptions"
+        self.line_description["42"] = "taxable income"
         self.line_description["75"] = "overpaid"
         
         self.line_calc_table = {
@@ -35,6 +37,10 @@ class Form_1040(_Form_1040):
                 "74": self.line_74,
                 "75": self.line_75,
                 }
+
+    def status(self):
+        if self.line("2"):
+            return opentax.FilingStatus.MARRIED_JOINT
 
     def line_6d(self):
         return self.line("6a") + self.line("6b") + len(self.line("6c"))
@@ -138,11 +144,11 @@ class Form_1040(_Form_1040):
 
         self.lines["68"] = 0
 
-        print()
         print("Form 1040")
-        self.print_lines(["7", "10", "21", "22", "36", "37", "38", "40", "41", "43", "44", "47", "55", "56", "63", "64", "74", "75"])
-
+        self.print_lines(["7", "10", "21", "22", "36", "37", "38", "40", "41", "42", "43", "44", "47", "55", "56", "63", "64", "74", "75"])
         print()
+
         print("Schedule A")
         taxes.form_1040_schedule_A.print_lines(["5", "6","9", "10", "13", "15", "29"])
+        print()
  

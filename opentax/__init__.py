@@ -1,12 +1,15 @@
 import json
 import numpy
 import os
+import enum
 
 import opentax.form_w_2
 import opentax.form_OR_40
 import opentax.form_1040
 import opentax.form_1098
 
+class FilingStatus(enum.Enum):
+    MARRIED_JOINT = 2
 
 def form_factory(filename):
     with open(filename, "r") as f:

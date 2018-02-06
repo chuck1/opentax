@@ -1,8 +1,38 @@
+import numpy as np
 
 import opentax.form
 
+class RangeTable:
+    def lookup(self, x):
+        X = self.table[:,0]
+        #X0 = X[X < x]
+        X1 = self.table[X > x]
+        return X1[0]
+
+class Worksheet_OR_40_line_10_Table_Married_Joint(RangeTable):
+    def __init__(self):
+        self.table = np.array([
+            [125000, 6550],
+            ])
+
 class Worksheet_OR_40_line_10(opentax.form.Form):
+    def __init__(self):
+        super(Worksheet_OR_40_line_10, self).__init__(self)
+
+        self.line_calc_table = {
+                "10": self.line_10,
+                }
+
+    def line_10(self):
+
+        if self.taxes.form_1040().status() == opentax.FilingStatus.MARRIED_JOINT:
+            table = Worksheet_OR_40_line_10_Table_Married_Joint()
+
+            return table.lookup(self.taxes.form_1040().line("37"))[1]
+            
+
     def fill(self, taxes):
+        self.taxes = taxes
 
         self.lines["1"] = taxes.form_1040().line("56")
 
@@ -22,19 +52,30 @@ class Worksheet_OR_40_line_10(opentax.form.Form):
 
         self.lines["9"] = self.line("5") - self.line("8")
 
-        self.lines["10"] = 6500
-
         self.lines["11"] = min(self.line("9"), self.line("10"))
 
-        print("Worksheet_OR_40_line_10")
-        print(self.line("11"))
+        print(self.__class__.__name__)
+        self.print_lines(["11"])
+        print()
 
 
+class Form_OR_40(opentax.form.Form):
+    def __init__(self):
+        super(Form_OR_40, self).__init__()
 
-class _Form_OR_40(opentax.form.Form):
-    line_calc_table = {}
+        self.line_calc_table = {
+                "22": self.line_22,
+                }
 
-class Form_OR_40(_Form_OR_40):
+        self.line_description["21"] = "taxable income"
+        self.line_description["22"] = "tax"
+        
+    def line_22(self):
+        if (self.line("21") > 50000) and (self.line("21") < 125000):
+            return 4024 + (self.line("21") - 50000) * 0.09
+
+        raise NotImplementedError()
+
     def fill(self, taxes):
 
         worksheet_OR_40_line_10 = Worksheet_OR_40_line_10()
@@ -66,14 +107,10 @@ class Form_OR_40(_Form_OR_40):
         
         self.lines["22"] = 0
 
-        if (self.line("21") > 50000) and (self.line("21") < 125000):
-            self.lines["22"] = 4028 + (self.line("21") - 50000) * 0.09
-
         
-        print("{:<32}{:16.2f}".format("line  21: taxable income", self.line("21")))
-        print("{:<32}{:16.2f}".format("line  22: tax", self.line("22")))
-
-
+        print(self.__class__.__name__)
+        self.print_lines(["21", "22"])
+        print()
 
 
 
