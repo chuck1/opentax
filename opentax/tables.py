@@ -5,13 +5,7 @@ import os
 class TaxTable:
     def lookup(self, line43, status):
 
-        #print(line43)
-
         x = self.table[:,0]
-        
-        #print(x)
-
-        #print(np.logical_not(x > line43))
         
         x0 = x[x < line43]
         x1 = x[x > line43]
@@ -19,25 +13,11 @@ class TaxTable:
         if (np.shape(x0)[0] == 0) or ((np.shape(x1)[0] == 0)):
             raise Exception("tax table does not cover your taxable income")
 
-        #print(np.shape(x0))
-        #print(np.shape(x1))
-        #print(x0)
-        #print(x1)
-
         x2 = x1[0]
         
-        #print(x2)
-
         i = np.where(x==x2)
 
-        #print(i[0][0])
-
-        #print(self.table[i])
-        #print(self.table[i,status+1])
-        #print(self.table[i,status+1][0][0])
-
         return self.table[i,status+1][0][0]
-
 
 class TaxTable2016(TaxTable):
     def __init__(self):

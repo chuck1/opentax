@@ -35,7 +35,7 @@ class FormGroup:
     def line(self, line_name):
         return sum(f.line(line_name) for f in self.forms)
 
-class Taxes(object):
+class Taxes:
     forms_input = []
     
     def load_input(self, folder):
@@ -44,10 +44,11 @@ class Taxes(object):
                 form = form_factory(os.path.join(root, fn))
                 self.forms_input.append(form)
 
-        self.forms_W_2 = FormGroup(self.forms_W_2())
+        self.forms_W_2 = FormGroup(self._forms_W_2())
+
         self.forms_1098 = FormGroup(self.forms_1098())
 
-    def forms_W_2(self):
+    def _forms_W_2(self):
         for f in self.forms_input:
             if isinstance(f, opentax.form_w_2.Form_W_2):
                 yield f
