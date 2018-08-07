@@ -4,6 +4,7 @@ import os
 
 import opentax.form_1040_sch_a
 import opentax.worksheet_6251
+import opentax.worksheet_child_tax_credit
 
 class _Form_1040(opentax.form.Form):
     line_calc_table = {}
@@ -131,8 +132,20 @@ class Form_1040(_Form_1040):
         worksheet_6251.fill(taxes)
         self.lines["45"] = 0
 
+        worksheet_child = opentax.worksheet_child_tax_credit.WorksheetChildTaxCredit()
+        worksheet_child.fill(taxes)
+        self.lines["52"] = worksheet_child.line("10")
 
-        self.lines["55"] = 0
+
+        self.lines["55"] = sum([
+            self.line("48", 0),
+            self.line("49", 0),
+            self.line("50", 0),
+            self.line("51", 0),
+            self.line("52", 0),
+            self.line("53", 0),
+            self.line("54", 0),
+            ])
         
 
         self.lines["59"] = 0
@@ -146,7 +159,9 @@ class Form_1040(_Form_1040):
 
         print("Form 1040")
         print("----------------------------------------------")
-        self.print_lines(["7", "10", "21", "22", "36", "37", "38", "40", "41", "42", "43", "44", "47", "55", "56", "61", "63", "64", "74", "75"])
+        self.print_lines([
+            "7", "10", "21", "22", "36", "37", "38", "40", "41", "42", "43", "44", "47", 
+            "52", "55", "56", "61", "63", "64", "74", "75"])
         print()
 
         print("Schedule A")

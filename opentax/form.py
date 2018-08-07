@@ -1,6 +1,8 @@
 import inspect
 import crayons
 
+class NoValue: pass
+
 class Form:
     line_calc_table = {}
 
@@ -26,7 +28,7 @@ class Form:
         else:
             return func()
     
-    def line(self, line_name):
+    def line(self, line_name, default=NoValue()):
 
         try:
             return self.line_calc(line_name)
@@ -36,6 +38,9 @@ class Form:
         try:
             return self.lines[line_name]
         except KeyError:
+            # why not just return zero?
+            if not isinstance(default, NoValue): return default
+
             msg = "{} in file {} does not have line {}".format(
                 self.__class__.__name__,
                 repr(self.filename),
